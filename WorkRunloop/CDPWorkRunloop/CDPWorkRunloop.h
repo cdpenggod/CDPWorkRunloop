@@ -11,7 +11,7 @@
  *  任务进行block
  *  (BOOL返回值确定此次任务是否完成,返回NO则自动进行下一个任务直到返回YES或无任务可进行)
  */
-typedef void(^CDPRunloopBlock)(void);
+typedef BOOL(^CDPRunloopBlock)(void);
 
 
 
