@@ -66,6 +66,10 @@
         //判断是否匹配，不匹配就没必要进行渲染等操作了（非必须，如果不是很复杂的操作，其实不判断，也无所谓）
         if ([cell.currentIndexPath isEqual:indexPath]) {
             cell.textLabel.text=[NSString stringWithFormat:@"%ld",(long)indexPath.row];
+            return YES;
+        }
+        else{
+            return NO;
         }
     }];
     
