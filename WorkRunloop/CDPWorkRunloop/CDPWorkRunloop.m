@@ -85,16 +85,19 @@ static void callBack(CFRunLoopObserverRef observer, CFRunLoopActivity activity, 
         return;
     }
     
-    //从数组中取出任务
-    CDPRunloopBlock block=[work.taskArr firstObject];
-    
-    //完成任务
-    if (block) {
-        block();
+    BOOL isSuccess=NO;
+    while (isSuccess==NO&&work.taskArr>0) {
+        //从数组中取出任务
+        CDPRunloopBlock block=[work.taskArr firstObject];
+        
+        //完成任务
+        if (block) {
+            isSuccess=block();
+        }
+        
+        //移除刚完成的任务
+        [work.taskArr removeObjectAtIndex:0];
     }
-    
-    //移除刚完成的任务
-    [work.taskArr removeObjectAtIndex:0];
 }
 #pragma mark - 其他方法
 -(NSMutableArray *)taskArr{
