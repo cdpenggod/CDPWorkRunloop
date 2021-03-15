@@ -9,12 +9,11 @@
 
 #import <QuartzCore/QuartzCore.h>
 
+#define Default_MaxCount 30 //默认最大任务数
+
 @interface CDPWorkRunloop ()
 
-
-@property (nonatomic,strong) NSMutableArray *taskArr;//任务数组
-
-
+@property (nonatomic, strong) NSMutableArray *taskArr; //待执行任务数组
 
 @end
 
@@ -22,25 +21,25 @@
 
 #pragma mark - 添加删除任务
 //添加任务
--(void)addTask:(CDPRunloopBlock)task{
+- (void)addTask:(CDPRunloopBlock)task {
     [self.taskArr addObject:task];
     
-    if (self.taskArr.count>self.maxCount) {
+    if (self.openMaxLimit && self.taskArr.count > self.maxCount) {
         [self.taskArr removeObjectAtIndex:0];
     }
 }
 //移除所有任务
--(void)removeAllTask{
+- (void)removeAllTask {
     [self.taskArr removeAllObjects];
 }
 #pragma mark - 内部逻辑实现
 //单例化
-+(instancetype)sharedWork{
++ (instancetype)sharedWork {
     static CDPWorkRunloop *work;
     static dispatch_once_t once;
     dispatch_once(&once, ^{
-        work=[[CDPWorkRunloop alloc] init];
-        work.maxCount=30;
+        work = [[CDPWorkRunloop alloc] init];
+        work.maxCount = Default_MaxCount;
         
         //设置个计时器防止runloop休眠，无法响应任务
         CADisplayLink *displayLink = [CADisplayLink displayLinkWithTarget:work
@@ -52,9 +51,9 @@
     return work;
 }
 //注册observer
--(void)registerObserver{
+- (void)registerObserver {
     //上下文
-    CFRunLoopObserverContext context={
+    CFRunLoopObserverContext context = {
         0,
         (__bridge void *)(self),
         &CFRetain,
@@ -64,35 +63,35 @@
     
     //创建runloop休眠前observer
     static CFRunLoopObserverRef observer;
-    observer=CFRunLoopObserverCreate(kCFAllocatorDefault,
-                                     kCFRunLoopBeforeWaiting,
-                                     YES,
-                                     0,
-                                     &callBack,
-                                     &context);
+    observer = CFRunLoopObserverCreate(kCFAllocatorDefault,
+                                       kCFRunLoopBeforeWaiting,
+                                       YES,
+                                       0,
+                                       &callBack,
+                                       &context);
     //给主线程runloop添加观察者
-    CFRunLoopAddObserver(CFRunLoopGetMain(),observer,kCFRunLoopCommonModes);
+    CFRunLoopAddObserver(CFRunLoopGetMain(), observer, kCFRunLoopCommonModes);
 
     CFRelease(observer);
 }
 //observer回调
 static void callBack(CFRunLoopObserverRef observer, CFRunLoopActivity activity, void *info) {
     
-    CDPWorkRunloop *work=(__bridge CDPWorkRunloop *)info;
+    CDPWorkRunloop *work = (__bridge CDPWorkRunloop *)info;
     
     //无任务
-    if (work.taskArr.count==0){
+    if (work.taskArr.count == 0){
         return;
     }
     
-    BOOL isSuccess=NO;
-    while (isSuccess==NO&&work.taskArr>0) {
+    BOOL isSuccess = NO;
+    while (isSuccess == NO && work.taskArr > 0) {
         //从数组中取出任务
-        CDPRunloopBlock block=[work.taskArr firstObject];
+        CDPRunloopBlock block = [work.taskArr firstObject];
         
         //完成任务
         if (block) {
-            isSuccess=block();
+            isSuccess = block();
         }
         
         //移除刚完成的任务
@@ -100,14 +99,17 @@ static void callBack(CFRunLoopObserverRef observer, CFRunLoopActivity activity, 
     }
 }
 #pragma mark - 其他方法
--(NSMutableArray *)taskArr{
-    if (_taskArr==nil) {
+- (void)setMaxCount:(NSInteger)maxCount {
+    _maxCount = MAX(0, maxCount);
+}
+- (NSMutableArray *)taskArr {
+    if (_taskArr == nil) {
         _taskArr = [NSMutableArray new];
     }
     return _taskArr;
 }
 //定时器方法(防止runloop休眠)
--(void)doNothing{
+- (void)doNothing {
 }
 
 

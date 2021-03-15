@@ -112,6 +112,8 @@
 				046A3AAA23C6F47700A821EE /* AppDelegate.m */,
 				046A3AAC23C6F47700A821EE /* ViewController.h */,
 				046A3AAD23C6F47700A821EE /* ViewController.m */,
+				046A3ADF23C6F5AF00A821EE /* UITableViewCell+CDPRunloopCell.h */,
+				046A3AE023C6F5AF00A821EE /* UITableViewCell+CDPRunloopCell.m */,
 				046A3AAF23C6F47700A821EE /* Main.storyboard */,
 				046A3AB223C6F47800A821EE /* Assets.xcassets */,
 				046A3AB423C6F47800A821EE /* LaunchScreen.storyboard */,
@@ -144,8 +146,6 @@
 			children = (
 				046A3ADC23C6F48700A821EE /* CDPWorkRunloop.h */,
 				046A3ADD23C6F48700A821EE /* CDPWorkRunloop.m */,
-				046A3ADF23C6F5AF00A821EE /* UITableViewCell+CDPRunloopCell.h */,
-				046A3AE023C6F5AF00A821EE /* UITableViewCell+CDPRunloopCell.m */,
 			);
 			path = CDPWorkRunloop;
 			sourceTree = "<group>";
